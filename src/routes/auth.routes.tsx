@@ -22,8 +22,8 @@ export function AuthRoutes() {
         headerShown: false,
       }}
     >
-      <Screen name="SignIn" component={SignIn} />
-      <Screen name="SignUp" component={SignUp} />
+      <Screen name="signIn" component={SignIn} />
+      <Screen name="signUp" component={SignUp} />
     </Navigator>
   );
 }
