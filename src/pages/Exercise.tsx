@@ -1,11 +1,14 @@
-import { Heading, HStack, Icon, Text, VStack } from "native-base";
+import { Box, Heading, HStack, Icon, Image, Text, VStack } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
+import { Button } from "@components/Button";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 import BodySvg from "@assets/body.svg";
+import SeriesSvg from "@assets/series.svg";
+import RepetitionsSvg from "@assets/repetitions.svg";
 
 export function Exercise() {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
@@ -38,6 +41,45 @@ export function Exercise() {
             </Text>
           </HStack>
         </HStack>
+      </VStack>
+
+      <VStack p={8}>
+        <Image
+          w="full"
+          h={80}
+          source={{
+            uri: "https://i.ytimg.com/vi/DfZil-tMhAI/maxresdefault.jpg",
+          }}
+          alt="Nome do exercício"
+          mb={3}
+          resizeMode="cover"
+          rounded="lg"
+        />
+
+        <Box bg="gray.600" rounded="md" pb={4} px={4}>
+          <HStack
+            alignItems="center"
+            justifyContent="space-around"
+            mb={6}
+            mt={5}
+          >
+            <HStack>
+              <SeriesSvg />
+              <Text color="gray.200" ml="2">
+                3 séries
+              </Text>
+            </HStack>
+
+            <HStack>
+              <RepetitionsSvg />
+              <Text color="gray.200" ml="2">
+                12 repetições
+              </Text>
+            </HStack>
+          </HStack>
+
+          <Button title="Marcar como realizado" />
+        </Box>
       </VStack>
     </VStack>
   );
