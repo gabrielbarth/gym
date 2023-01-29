@@ -1,14 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
 import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
+import { Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 
 import LogoSvg from "@assets/logo.svg";
 import BackgroungImg from "@assets/background.png";
 
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { api } from "@services/api";
 
 type FormDataProps = {
   name: string;
@@ -42,8 +45,19 @@ export function SignUp() {
     resolver: yupResolver(signUpSchema),
   });
 
-  function handleSignUp(data: FormDataProps) {
-    console.log(data);
+  async function handleSignUp({ email, name, password }: FormDataProps) {
+    try {
+      const response = await api.post("users", {
+        name,
+        email,
+        password,
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.message);
+        Alert.alert(error.response?.data.message);
+      }
+    }
   }
 
   function handleGoBack() {
