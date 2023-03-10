@@ -1,4 +1,13 @@
-import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
+import { useState } from "react";
+import {
+  VStack,
+  Image,
+  Text,
+  Center,
+  Heading,
+  ScrollView,
+  useToast,
+} from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
@@ -7,10 +16,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import LogoSvg from "@assets/logo.svg";
 import BackgroungImg from "@assets/background.png";
 
+import { useAuth } from "@hooks/useAuth";
+
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
+import { AppError } from "@utils/AppError";
 
 type FormDataProps = {
   email: string;
@@ -26,7 +38,9 @@ const signInSchema = yup.object({
 });
 
 export function SignIn() {
+  const { signIn } = useAuth();
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+  const toast = useToast();
   const {
     control,
     handleSubmit,
@@ -35,8 +49,22 @@ export function SignIn() {
     resolver: yupResolver(signInSchema),
   });
 
-  function handleSignIn(data: FormDataProps) {
-    console.log(data);
+  const [isLoading, setIsloading] = useState(false);
+
+  async function handleSignIn({ email, password }: FormDataProps) {
+    try {
+      setIsloading(true);
+      await signIn(email, password);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível entrar. Tente novamente mais tarde.";
+
+      setIsloading(false);
+
+      toast.show({ title, placement: "top", bgColor: "red.500" });
+    }
   }
 
   function handleNewAccount() {
@@ -96,7 +124,11 @@ export function SignIn() {
             )}
           />
 
-          <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
+          <Button
+            title="Acessar"
+            onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
+          />
         </Center>
 
         <Center mt={24}>
